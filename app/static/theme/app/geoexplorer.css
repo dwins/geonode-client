@@ -377,3 +377,26 @@ float:right;
 .olLayerGoogleV3.olLayerGooglePoweredBy {
     bottom: 2em !important;
 }
+
+/* PhotoGrid */
+.images {
+	background: #fff;
+}
+.images .thumb {
+	background: #dddddd;
+	padding: 3px;
+}
+.images .thumb img {
+	border: 1px solid white;
+	height: 60px;
+}
+.images .thumb-wrap {
+	float: left;
+	margin: 4px;
+	margin-right: 0;
+	padding: 5px;
+}
+.images .x-view-selected .thumb {
+	background: #8db2e3;
+	cursor: pointer;
+}
