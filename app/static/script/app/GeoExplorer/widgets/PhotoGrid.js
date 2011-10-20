@@ -115,7 +115,8 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
     
     showFull: function(record, layer) {
         var activeItem = record.store.indexOf(record),
-            count = record.store.getCount();
+            count = record.store.getCount(),
+            template = new Ext.Template(this.path);
         var photos = new Ext.Window({
             title: "Photos",
             modal: true,
@@ -133,7 +134,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
                 handler: function() {
                     if (activeItem > 0) {
                         activeItem -= 1;
-                        photos.body.dom.src = template.apply(record.store.getAt(activeItem).data);
+                        photos.body.dom.src = template.apply([layer, record.store.getAt(activeItem).data.full]);
                         photos.current.setText((activeItem + 1) + " / " + count);
                     }
                     if (activeItem == 0) {
@@ -154,7 +155,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
                 handler: function() {
                     if (activeItem < count - 1) {
                         activeItem += 1;
-                        photos.body.dom.src = template.apply(record.store.getAt(activeItem).data);
+                        photos.body.dom.src = template.apply([layer, record.store.getAt(activeItem).data.full]);
                         photos.current.setText((activeItem + 1) + " / " + count);
                         if (activeItem == count - 1) {
                             this.disable();
