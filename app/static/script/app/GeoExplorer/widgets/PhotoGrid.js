@@ -65,67 +65,41 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
         }
         
         if (photos.urls.length > 0) {
-            this.add({
-                xtype: "container",
-                region: "north",
-                height: 86,
-                flex: 1,
-                layout: "fit",
-                cls: "images",
-                items: [{
-                    xtype: "dataview",
-                    itemSelector: 'div.thumb-wrap',
-                    style: 'overflow:auto',
-                    singleSelect: true,
-                    overClass: "x-view-selected",
-                    store: new Ext.data.JsonStore({
-                        data: photos,
-                        autoLoad: true,
-                        root: 'urls',
-                        id: 'id',
-                        fields:[
-                            'id', 'thumbnail', 'full'
-                        ]
-                    }),
-                    tpl: new Ext.XTemplate(
-                        '<tpl for=".">',
-                        '<div class="thumb-wrap" id="{id}">',
-                        '<div class="thumb"><img src="',
-                        String.format(this.path, layer, "{thumbnail}"),
-                        '" class="thumb-img"></div>',
-                        '</div>',
-                        '</tpl>'
-                    ),
-                    listeners: {
-                        selectionchange: function(view, selections) {
-                            this.showFull(view.store.getById(selections[0].id), layer);
-                        },
-                        scope: this
-                    }
-                }]
+            var store = new Ext.data.JsonStore({ 
+                root: 'root',
+                fields: ["thumbnail", "full"],
+                data: { root: photos.urls }
             });
+            console && console.log(store);
+            this.add(
+              this.createBrowser(store.getAt(0), layer)
+            );
         }
         
         this.add({
             xtype: "propertygrid",
             region: "center",
+            boxMinHeight: 100,
             source: source
         });
     },
     
-    showFull: function(record, layer) {
+    createBrowser: function(record, layer) {
         var activeItem = record.store.indexOf(record),
             count = record.store.getCount(),
             template = new Ext.Template(this.path);
-        var photos = new Ext.Window({
-            title: "Photos",
+        var photos = new Ext.Panel({
             modal: true,
-            maximizable: true,
-            width: 400,
+            region: 'north',
+            height: 200,
             bodyCfg: {
-                tag: "img",
-                src: String.format(this.path, layer, record.data.full),
-                style: "text-align:center"
+                tag: "div",
+                style: "text-align:center",
+                children: [{
+                    tag: "img",
+                    src: String.format(this.path, layer, record.data.thumbnail),
+                    style: "max-height: 100%; max-width: 100%"
+                }]
             },
             bbar: [{
                 iconCls: "x-tbar-page-prev",
@@ -134,7 +108,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
                 handler: function() {
                     if (activeItem > 0) {
                         activeItem -= 1;
-                        photos.body.dom.src = template.apply([layer, record.store.getAt(activeItem).data.full]);
+                        photos.body.child("img").dom.src = template.apply([layer, record.store.getAt(activeItem).data.thumbnail]);
                         photos.current.setText((activeItem + 1) + " / " + count);
                     }
                     if (activeItem == 0) {
@@ -155,7 +129,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
                 handler: function() {
                     if (activeItem < count - 1) {
                         activeItem += 1;
-                        photos.body.dom.src = template.apply([layer, record.store.getAt(activeItem).data.full]);
+                        photos.body.child("img").dom.src = template.apply([layer, record.store.getAt(activeItem).data.thumbnail]);
                         photos.current.setText((activeItem + 1) + " / " + count);
                         if (activeItem == count - 1) {
                             this.disable();
@@ -166,7 +140,8 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
                     }
                 }
             }]
-        }).show();
+        });
+        return photos;
     }
     
 });
