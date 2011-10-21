@@ -24,7 +24,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
      *  be replaced with the layer name (without namespace prefix), and "{1}"
      *  with the file name. Default is "/site_media/photo_layers/{0}/{1}"
      */
-    path: "/site_media/photo_layers/{0}/{1}",
+    path: "/site_media/photo_layers/{0}/thumbnails/{1}",
     
     /** api: config[imageFieldRegExp]
      *  ``RegExp`` Regular expression for finding field names that contain
@@ -39,7 +39,7 @@ GeoExplorer.PhotoGrid = Ext.extend(Ext.Panel, {
      *  [(/\.(.*)$/), ".thumbnail.$1"], replacing e.g. "foo.jpg" to
      *  "foo.thumbnail.jpg".
      */
-    thumbnailReplaceArgs: [(/\.(.*)$/), ".thumbnail.$1"],
+    thumbnailReplaceArgs: [(/\.(.*)$/), ".$1"],
     
     constructor: function(config) {
         config.layout = "border";
